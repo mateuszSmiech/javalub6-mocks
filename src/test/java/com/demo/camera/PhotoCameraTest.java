@@ -36,14 +36,28 @@ public class PhotoCameraTest {
     public void dataShouldBeWrittenOnTheCardWhenButtonIsPressed() {
         ImageSensor sensor = mock(ImageSensor.class);
         Card card = mock(Card.class);
-        WriteListener writeListener = mock(WriteListener.class);
-        PhotoCamera camera = new PhotoCamera(sensor, card, writeListener);
+        PhotoCamera camera = new PhotoCamera(sensor, card);
         camera.turnOn();
         byte[] byteTable = {1};
         when(sensor.read()).thenReturn(byteTable);
         camera.pressButton();
         verify(card).write(byteTable);
     }
+
+    @Test
+    public void powerIsNotOffWhenSaveIsInProgress() {
+        ImageSensor sensor = mock(ImageSensor.class);
+        Card card = mock(Card.class);
+        PhotoCamera camera = new PhotoCamera(sensor, card);
+        camera.turnOn();
+        byte[] byteTable = {1};
+        when(sensor.read()).thenReturn(byteTable);
+        camera.pressButton();
+
+
+    }
+
+
 
 
 

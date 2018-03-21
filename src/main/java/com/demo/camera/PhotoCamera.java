@@ -1,20 +1,14 @@
 package com.demo.camera;
 
-public class PhotoCamera {
+public class PhotoCamera implements WriteListener {
     private ImageSensor sensor;
     private boolean isWorking;
     private Card card;
     private boolean isSaveCompleted;
-    private WriteListener writeCompleted;
+
 
     PhotoCamera(ImageSensor sensor) {
         this.sensor = sensor;
-    }
-
-    public PhotoCamera(ImageSensor sensor, Card card, WriteListener writeCompleted) {
-        this.sensor = sensor;
-        this.card = card;
-        this.writeCompleted = writeCompleted;
     }
 
     public PhotoCamera(ImageSensor sensor, Card card) {
@@ -28,17 +22,33 @@ public class PhotoCamera {
     }
 
     public void turnOff() {
-        sensor.turnOff();
-        isWorking = false;
+        if(!isSaveCompleted) {
+            sensor.turnOn();
+        } else {
+            sensor.turnOff();
+            isWorking = false;
+        }
     }
 
     public void pressButton() {
         if (isWorking) {
-            byte[] sensorData = sensor.read();
-            card.write(sensorData);
-            writeCompleted.writeCompleted();
+                byte[] sensorData = sensor.read();
+                card.write(sensorData);
         }
+    }
 
+    @Override
+    public void writeCompleted() {
+        isSaveCompleted = true;
+
+//        if (isSaveInProgress) {
+//            isSaveCompleted = false;
+//        } else {
+//            isSaveCompleted = true;
+//        }
+//        if (!isSaveInProgress) {
+//            isSaveCompleted = true;
+//        }
     }
 }
 
